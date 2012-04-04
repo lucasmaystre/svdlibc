@@ -1,37 +1,36 @@
-# Linux or Windows:
-CC = gcc -Wall -O4 -march=i486
-# CC = icc -w1 -O3 -march=i486
+# Compilation parameters.
+CC     = gcc
+CFLAGS = -Wall -O3
+LIBS   = -lm
 
-# Macintosh:
-ifeq ($(HOSTTYPE),powerpc)
-  CC = cc -pipe -O3 -Wall -fno-common -arch ppc
-endif
+# Installation parameters.
+EXE    = svd
+PREFIX = /usr/local
 
-LIBS=-lm
-OBJ=svdlib.o svdutil.o las2.o
+# Default rule is to build the executable.
+all: $(EXE)
 
-svd: Makefile main.o libsvd.a
-	${CC} ${CFLAGS} -o svd main.o libsvd.a ${LIBS}
-	mv -f $@ ${HOSTTYPE}/$@
-	ln -s ${HOSTTYPE}/$@ $@
-main.o: Makefile main.c svdlib.h
-	${CC} ${CFLAGS} -c main.c
+# Link the objects together to an executable file.
+$(EXE): main.o libsvd.a
+	$(CC) $(CFLAGS) -o $@ main.o libsvd.a $(LIBS)
+	@echo "Build was successful. Now type \`make install'."
 
-libsvd.a: ${HOSTTYPE} ${OBJ}
-	rm -f $@ ${HOSTTYPE}/$@
-	ar cr $@ ${OBJ}
+# Create an object archive (will be statically linked).
+libsvd.a: svdlib.o svdutil.o las2.o
+	@rm -f $@
+	ar cr $@ $^
 	ranlib $@
-	mv -f $@ ${HOSTTYPE}/$@
-	ln -s ${HOSTTYPE}/$@ $@
-svdlib.o: Makefile svdlib.h svdlib.c
-	${CC} ${CFLAGS} -c svdlib.c
-svdutil.o: Makefile svdutil.c svdutil.h
-	${CC} ${CFLAGS} -c svdutil.c
-las2.o: Makefile las2.c svdlib.h svdutil.h
-	${CC} ${CFLAGS} -c las2.c
-clean: 
-	rm *.o
 
-$(HOSTTYPE):
-	if test ! -d $(HOSTTYPE); \
-	then mkdir $(HOSTTYPE); fi
+# Pattern rule to compile all the C files.
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+.PHONY: clean
+clean: 
+	rm -rf *.o svd libsvd.a
+	@echo "Directory cleaned."
+
+.PHONY: install
+install: $(EXE)
+	install -m 755 $(EXE) $(PREFIX)/bin
+	@echo "Successfully installed under $(PREFIX)/bin"
