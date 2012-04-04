@@ -10,8 +10,8 @@ It works particularly efficiently in the following cases:
 These properties make it particularly well suited for [latent semantic
 analysis][2], for example.
 
-I ran an experiment on an Amazon EC2 [m1.xlarge][3] instance - which might be
-way overkill - with a 70k x 500k matrix containing 8M entries (density: 0.02%).
+I ran an experiment on an Amazon EC2 [m2.xlarge][3] instance - which might be
+way overkill - with a 70k × 500k matrix containing 8M entries (density: 0.02%).
 Here is the running time for different values of `d` (= dimensions = number of
 singular values):
 
@@ -38,6 +38,22 @@ this fork are working for me, but nothing guarantees they'll work for you.
 
 If you find a bug and fix it yourself, I'd be happy to get a pull your changes
 over.
+
+Installation instructions
+-------------------------
+
+Easy as pie:
+
+    # Download the code. Alternatively you can also download the zip file.
+    git clone git://github.com/lucasmaystre/svdlibc.git
+    cd svdlibc
+
+    # Just like any other sane program...
+    make
+    make install
+
+    # You're done. Start using it!
+    svd -o result -d 10 THE_MATRIX
 
 [1]: http://tedlab.mit.edu/~dr/SVDLIBC/
 [2]: http://en.wikipedia.org/wiki/Latent_semantic_analysis
