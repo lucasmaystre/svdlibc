@@ -1,9 +1,40 @@
+/*
+Copyright © 2002, University of Tennessee Research Foundation.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the University of Tennessee nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "svdlib.h"
 #include "svdutil.h"
 
-char *SVDVersion = "1.34";
+char *SVDVersion = "1.4";
 long SVDVerbosity = 1;
 long SVDCount[SVD_COUNTERS];
 
@@ -189,8 +220,13 @@ double *svdLoadDenseArray(char *filename, int *np, char binary) {
     svd_error("svdLoadDenseArray: failed to read %s", filename);
     return NULL;
   }
-  if (binary) svd_readBinInt(file, np);
-  else fscanf(file, " %d", np);
+  if (binary) {
+    svd_readBinInt(file, np);
+  } else if (fscanf(file, " %d", np) != 1) {
+    svd_error("svdLoadDenseArray: error reading %s", filename);
+    svd_closeFile(file);
+    return NULL;
+  }
   n = *np;
   a = svd_doubleArray(n, FALSE, "svdLoadDenseArray: a");
   if (!a) return NULL;
@@ -201,8 +237,12 @@ double *svdLoadDenseArray(char *filename, int *np, char binary) {
       a[i] = f;
     }
   } else {
-    for (i = 0; i < n; i++)
-      fscanf(file, " %lf\n", a + i);
+    for (i = 0; i < n; i++) {
+      if (fscanf(file, " %lf\n", a + i) != 1) {
+	svd_error("svdLoadDenseArray: error reading %s", filename);
+	break;
+      }
+    }
   }
   svd_closeFile(file);
   return a;

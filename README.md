@@ -1,6 +1,9 @@
 Doug Rohde's SVD C library
 ==========================
 
+**Good news: as of version 1.4, SVDLIBC is [explicitly available under a BSD
+license][5].**
+
 [SVDLIBC][1] is a fast implementation of SVD matrix decomposition by Doug Rohde.
 It works particularly efficiently in the following cases:
 
@@ -59,3 +62,4 @@ Easy as pie:
 [2]: http://en.wikipedia.org/wiki/Latent_semantic_analysis
 [3]: http://aws.amazon.com/ec2/instance-types/
 [4]: https://github.com/piskvorky/sparsesvd/commit/4ad18096334636e0eae180964284c6dd7b7749c3
+[5]: http://tedlab.mit.edu/~dr/SVDLIBC/license.html
