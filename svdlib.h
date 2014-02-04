@@ -101,12 +101,12 @@ SVD_F_DB:  dense binary
 /******************************** Functions **********************************/
 
 /* Creates an empty dense matrix. */
-extern DMat svdNewDMat(int rows, int cols);
+extern DMat svdNewDMat(long rows, long cols);
 /* Frees a dense matrix. */
 extern void svdFreeDMat(DMat D);
 
 /* Creates an empty sparse matrix. */
-SMat svdNewSMat(int rows, int cols, int vals);
+SMat svdNewSMat(long rows, long cols, long vals);
 /* Frees a sparse matrix. */
 void svdFreeSMat(SMat S);
 

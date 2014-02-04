@@ -48,7 +48,7 @@ void svdResetCounters(void) {
 
 /* Row major order.  Rows are vectors that are consecutive in memory.  Matrix
    is initialized to empty. */
-DMat svdNewDMat(int rows, int cols) {
+DMat svdNewDMat(long rows, long cols) {
   int i;
   DMat D = (DMat) malloc(sizeof(struct dmat));
   if (!D) {perror("svdNewDMat"); return NULL;}
@@ -73,7 +73,7 @@ void svdFreeDMat(DMat D) {
 }
 
 
-SMat svdNewSMat(int rows, int cols, int vals) {
+SMat svdNewSMat(long rows, long cols, long vals) {
   SMat S = (SMat) calloc(1, sizeof(struct smat));
   if (!S) {perror("svdNewSMat"); return NULL;}
   S->rows = rows;
